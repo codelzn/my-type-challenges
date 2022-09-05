@@ -85,3 +85,28 @@ type MyAwaited<T extends Promise<unknown>> = T extends Promise<infer X>
   : null;
 
 type Result8 = MyAwaited<ExampleType>; // string
+
+// challenge 9
+type If<C extends boolean, T, F> = C extends true ? T : F;
+
+type A = If<true, 'a', 'b'>; // expected to be 'a'
+type B = If<false, 'a', 'b'>; // expected to be 'b'
+
+// challenge 10
+type Concat<T extends any[], K extends any[]> = [...T, ...K];
+type Result10 = Concat<[1], [2]>; // expected to be [1, 2]
+
+// challenge 11
+type Includes<T extends readonly unknown[], U> = T extends [
+  infer TFirst,
+  ...infer TRest
+]
+  ? Equal<TFirst, U> extends true
+    ? true
+    : Includes<TRest, U>
+  : false;
+type isPillarMen = Includes<['Kars', 'Esidisi', 'Wamuu', 'Santana'], 'Dio'>; // expected to be `false`
+
+// challenge 12
+type Push<T extends readonly unknown[], U> = [...T, U]
+type Result = Push<[1, 2], '3'> // [1, 2, '3']
