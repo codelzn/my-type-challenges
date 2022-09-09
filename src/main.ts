@@ -27,6 +27,25 @@ type MyOmit<T, K extends keyof T> = {
 
 type TodoPreview = MyOmit<Todo, 'description' | 'title'>;
 
-const todo: TodoPreview = {
+const todo2: TodoPreview = {
   completed: false,
 };
+
+// challenges 3
+interface Todo {
+  title: string
+  description: string
+  completed: boolean
+}
+
+// type MyReadonly2<T, K extends keyof T> = {  }
+
+const todo3: MyReadonly2<Todo, 'title' | 'description'> = {
+  title: "Hey",
+  description: "foobar",
+  completed: false,
+}
+
+todo3.title = "Hello" // Error: cannot reassign a readonly property
+todo3.description = "barFoo" // Error: cannot reassign a readonly property
+todo3.completed = true // OK
