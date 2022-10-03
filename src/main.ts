@@ -33,19 +33,42 @@ const todo2: TodoPreview = {
 
 // challenges 3
 interface Todo {
-  title: string
-  description: string
-  completed: boolean
+  title: string;
+  description: string;
+  completed: boolean;
 }
 
-// type MyReadonly2<T, K extends keyof T> = {  }
+// type MyReadonly2<T, K extends keyof T = keyof T> = Omit<T, K> & Readonly<Pick<T, K>>
+type MyReadonly2<T, K extends keyof T = keyof T> = Omit<T, K> &
+  Readonly<Pick<T, K>>;
 
 const todo3: MyReadonly2<Todo, 'title' | 'description'> = {
-  title: "Hey",
-  description: "foobar",
+  title: 'Hey',
+  description: 'foobar',
   completed: false,
-}
+};
 
-todo3.title = "Hello" // Error: cannot reassign a readonly property
-todo3.description = "barFoo" // Error: cannot reassign a readonly property
-todo3.completed = true // OK
+// todo3.title = "Hello" // Error: cannot reassign a readonly property
+// todo3.description = "barFoo" // Error: cannot reassign a readonly property
+todo3.completed = true; // OK
+
+// challenges 4
+type X = {
+  x: {
+    a: 1;
+    b: 'hi';
+  };
+  y: 'hey';
+};
+
+type Expected = {
+  readonly x: {
+    readonly a: 1;
+    readonly b: 'hi';
+  };
+  readonly y: 'hey';
+};
+type DeepReadonly<T> = {
+  readonly [P in keyof T]: keyof T[P] extends never ? T[P] : DeepReadonly<T[P]>;
+};
+type Todo4 = DeepReadonly<X>; // should be same as `Expected`
