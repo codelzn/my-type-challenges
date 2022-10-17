@@ -1,4 +1,4 @@
-# TypeScript力を向上させるために、毎日TypeChallengesをやります。
+# TypeScript力を向上させるために、TypeChallengesやります。
 
 ### Author: codelzn
 
