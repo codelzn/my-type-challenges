@@ -151,16 +151,30 @@ const p = PromiseAll([promise1, promise2, promise3] as const);
 
 // challenges 10
 interface Cat {
-  type: 'cat'
-  breeds: 'Abyssinian' | 'Shorthair' | 'Curl' | 'Bengal'
+  type: 'cat';
+  breeds: 'Abyssinian' | 'Shorthair' | 'Curl' | 'Bengal';
 }
 
 interface Dog {
-  type: 'dog'
-  breeds: 'Hound' | 'Brittany' | 'Bulldog' | 'Boxer'
-  color: 'brown' | 'white' | 'black'
+  type: 'dog';
+  breeds: 'Hound' | 'Brittany' | 'Bulldog' | 'Boxer';
+  color: 'brown' | 'white' | 'black';
 }
 
-type LookUp<T, K> = T extends { type: K } ? T : never
+type LookUp<T, K> = T extends { type: K } ? T : never;
 
-type MyDog = LookUp<Cat | Dog, 'dog'> // expected to be `Dog`
+type MyDog = LookUp<Cat | Dog, 'dog'>; // expected to be `Dog`
+
+// challenges 11
+type TrimLeft<T extends string> = T extends `${' ' | '\n' | '\t'}${infer Rest}`
+  ? TrimLeft<Rest>
+  : T;
+type TrimRight<T extends string> = T extends `${infer Rest}${' ' | '\n' | '\t'}`
+  ? TrimRight<Rest>
+  : T;
+type Trim<T extends string> = TrimLeft<TrimRight<T>>;
+type trimed = Trim<'  Hello World  '>; // expected to be 'Hello World'
+
+// challenges 12
+type Capitalize<T extends string> = T extends `${infer First}${infer Rest}` ? `${Uppercase<First>}${Rest}` : T
+type capitalized = Capitalize<'hello world'> // expected to be 'Hello world'
