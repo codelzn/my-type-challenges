@@ -43,3 +43,63 @@ type AppendToObject<
 > = T[U] extends never ? T : { [K in U | keyof T]: K extends U ? V : T[K] };
 type Test19 = { id: '1' };
 type Result19 = AppendToObject<Test19, 'value', 4>; // expected to be { id: '1', value: 4 }
+
+// challenges 20
+type Absolute<T extends string | number | bigint> = T extends string
+  ? T extends `-${infer L}`
+    ? L
+    : T
+  : Absolute<`${T}`>;
+type Test20 = -100;
+type Result20 = Absolute<Test20>; // expected to be "100"
+
+// challenges 21
+type StringToUnion<T extends string> = T extends `${infer F}${infer R}`
+  ? F | StringToUnion<R>
+  : never;
+type Test21 = '123';
+type Result21 = StringToUnion<Test21>; // expected to be "1" | "2" | "3"
+
+// challenges 22
+type Merge<
+  F extends Record<PropertyKey, any>,
+  S extends Record<PropertyKey, any>
+> = {
+  [K in keyof F | keyof S]: K extends keyof S ? S[K] : F[K];
+};
+type foo = {
+  name: string;
+  age: string;
+};
+
+type coo = {
+  age: number;
+  sex: string;
+};
+
+type Result22 = Merge<foo, coo>; // expected to be {name: string, age: number, sex: string}
+
+// challenges 23
+type KebabCase<S extends string> = S extends `${infer F}${infer R}`
+  ? R extends Uncapitalize<R>
+    ? `${Lowercase<F>}${KebabCase<R>}`
+    : `${Lowercase<F>}-${KebabCase<Uncapitalize<R>>}`
+  : S;
+type FooBarBaz = KebabCase<'FooBarBaz'>;
+const foobarbaz: FooBarBaz = 'foo-bar-baz';
+
+type DoNothing = KebabCase<'do-nothing'>;
+const doNothing: DoNothing = 'do-nothing';
+
+// challenges 24
+type Diff<O, O1> = Omit<O & O1, keyof O & keyof O1>;
+type Foo = {
+  a: string;
+  b: number;
+};
+type Bar = {
+  a: string;
+  c: boolean;
+};
+type Result1 = Diff<Foo, Bar>; // { b: number, c: boolean }
+type Result2 = Diff<Bar, Foo>; // { b: number, c: boolean }
